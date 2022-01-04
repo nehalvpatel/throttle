@@ -134,7 +134,7 @@ export function throttle(
   // Method that allows clearing the cache based on the value being cached.
   var onCached = getOnCached<FuncArgs, CacheValue>(options);
 
-  function execute(...args: FuncArgs) {
+  function execute(...args: FuncArgs): CacheValue {
     // If there is no timeout set we simply call `func`
     if (!timeout || timeout < 1) return func(...args);
 
