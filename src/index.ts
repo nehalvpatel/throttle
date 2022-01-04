@@ -188,7 +188,8 @@ export function throttle(
       applyTimeout(timeout);
       onCached(cacheItem);
 
-      return cacheItem.value;
+      // TODO: might need to be changed to `return cacheItem.value;`
+      return cache.get(key)!.value;
     }
 
     return cache.get(key)!.value;
