@@ -1,5 +1,5 @@
 {
-  "name": "throttle",
+  "name": "@nehalvpatel/throttle",
   "version": "2.0.0",
   "description": "Throttle depending on function arguments.",
   "main": "dist/index.js",
