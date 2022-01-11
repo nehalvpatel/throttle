@@ -106,6 +106,12 @@ type ThrottleOptions<FuncArgs extends any[], CacheValue> = {
   rejectFailedPromise?: boolean;
 };
 
+export type ThrottledFunction<T extends (...args: any) => any> = {
+  (...args: Parameters<T>): ReturnType<T>;
+  retrieveCachedValue(...args: Parameters<T>): ReturnType<T> | undefined;
+  clearCache(): void;
+};
+
 export function throttle(
   func: FunctionToThrottle,
   timeout?: number,
@@ -113,7 +119,7 @@ export function throttle(
     Parameters<typeof func>,
     ReturnType<typeof func>
   > = {}
-) {
+): ThrottledFunction<typeof func> {
   type FuncArgs = Parameters<typeof func>;
   type CacheValue = ReturnType<typeof func>;
 
@@ -134,7 +140,7 @@ export function throttle(
   // Method that allows clearing the cache based on the value being cached.
   var onCached = getOnCached<FuncArgs, CacheValue>(options);
 
-  function execute(...args: FuncArgs): CacheValue {
+  function execute(...args: FuncArgs): ThrottledFunction<typeof func> {
     // If there is no timeout set we simply call `func`
     if (!timeout || timeout < 1) return func(...args);
 
@@ -195,7 +201,14 @@ export function throttle(
     return cache.get(key)!.value;
   }
 
-  execute.clear = function clear() {
+  execute.retrieveCachedValue = function get(
+    ...args: FuncArgs
+  ): CacheValue | undefined {
+    const key: CacheKey = toResolverKey(resolver(...args));
+    return cache.get(key)?.value;
+  };
+
+  execute.clearCache = function clear() {
     if (arguments.length < 1) {
       cache.clear();
       return;
