@@ -109,11 +109,7 @@ type ThrottleOptions<Func extends AnyFunction> = {
   rejectFailedPromise?: boolean;
 };
 
-type InnerFunction<Func extends AnyFunction> = (
-  ...args: Parameters<Func>
-) => ReturnType<Func>;
-
-export type ThrottledFunction<Func extends AnyFunction> = {
+type ThrottledFunction<Func extends AnyFunction> = {
   (...args: Parameters<Func>): ReturnType<Func>;
   retrieveCachedValue(...args: Parameters<Func>): ReturnType<Func> | undefined;
   clearCache(): void;
